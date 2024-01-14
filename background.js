@@ -17,7 +17,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (tab.url.includes(url) && changeInfo.audible) {
       chrome.notifications.create({
         title: "Sound detected!",
-        message: "Message",
+        message: `A sound was detected on ${url}.`,
         type: "basic",
         iconUrl: "icon.png",
       });
