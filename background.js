@@ -11,18 +11,29 @@ function restoreOptions() {
 }
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  restoreOptions().then((url) => {
-    console.log('url', url);
+  restoreOptions()
+    .then((url) => {
+      console.log("url", url);
+      const urlsFromOption = url.split(",");
 
-    if (tab.url.includes(url) && changeInfo.audible) {
-      chrome.notifications.create({
-        title: "Sound detected!",
-        message: `A sound was detected on ${url}.`,
-        type: "basic",
-        iconUrl: "icon.png",
-      });
-    }
-  }).catch((error) => {
-    console.error('Error retrieving the URL:', error);
-  });
+      let foundUrl = null;
+      for (let url of urlsFromOption) {
+        if (tab.url.includes(url)) {
+          foundUrl = url;
+          break;
+        }
+      }
+
+      if (foundUrl != null && changeInfo.audible) {
+        chrome.notifications.create({
+          title: "Sound detected!",
+          message: `A sound was detected on ${foundUrl}.`,
+          type: "basic",
+          iconUrl: "icon.png",
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error retrieving the URL:", error);
+    });
 });
